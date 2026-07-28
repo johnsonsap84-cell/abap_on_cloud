@@ -1,0 +1,53 @@
+projection;
+strict ( 2 );
+use side effects;
+use collaborative draft;
+
+define behavior for ZATS_AB_TRAVEL_PROCESSOR alias Travel
+//now we have another behavior imp class in behavior pool
+implementation in class zcl_ats_ab_trav_proc unique
+{
+  use create (augment) ;
+  use update ;
+  use delete;
+
+
+  use action Activate;
+  use action Edit;
+  use action Resume;
+  use action Prepare;
+  use action Discard;
+  use action Share;
+  use action validateCustomer;
+
+  use action copyTravel;
+
+  use association _Booking { create; with draft; }
+  use association _Attachments { create; with draft; }
+}
+
+define behavior for ZATS_AB_BOOKING_PROCESSOR alias Booking
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+  use association _BookingSuppl { create; with draft; }
+}
+
+define behavior for ZATS_AB_BOOKSUPPL_PROCESSOR alias BookSuppl
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+  use association _Booking { with draft; }
+}
+
+define behavior for ZATS_AB_M_ATTACH_PROCESSOR alias Attachments
+{
+  use update;
+  use delete;
+
+  use association _Travel { with draft; }
+}
